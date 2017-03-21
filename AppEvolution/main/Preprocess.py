@@ -57,7 +57,7 @@ def NLProcess(root, fileName):
                                "NN","NNS","VB",    # n.
                                "VBD","VBG","VBN","VBP","VBZ"]]    # v.
                 oneReview.extend(wordsNVAdj)
-            reviewPrep = [lan.stem(word)    # stemming
+            reviewPrep = [wn.morphy(word)    # stemming
                             for word in oneReview if not word in englishStopWords]    # remove stopwords
             
             testPrep.write("%s%s%s\n" % (date,mark,reviewPrep))
@@ -83,4 +83,5 @@ global englishStopWords
 global lan
 englishStopWords = nltk.corpus.stopwords.words("english")
 lan = nltk.stem.lancaster.LancasterStemmer()
+wn = nltk.corpus.wordnet
 getFiles("D:\Users\Mo\workspace\AppEvolution\data\googleplay_data_save")
