@@ -18,13 +18,13 @@ import nltk
 import re
 import datetime
 
-def getRevFiles(dirPath):
+def getRevFiles(dirPath):    # get all files contain review data
     for root, _,files in os.walk(dirPath):
         for fileName in files:
             prepReview(root, fileName)
     return
 
-def NLPProcess(text):
+def NLPProcess(text):    # NLP preprocessing
     global englishStopWords
     global wn
     sentences = nltk.sent_tokenize(    # benefit sentence tokenizing
@@ -43,7 +43,7 @@ def NLPProcess(text):
                     for word in wholeText if not word in englishStopWords and wn.morphy(word)]    # remove stopwords
     return textPrep
 
-def prepReview(root, fileName):
+def prepReview(root, fileName):    # Preprocess review data
     global dayRef
     aFile = open(os.path.join(root, fileName), 'r')
     forReview = open("D:/Users/Mo/workspace/AppEvolution/main/Review/review/" + fileName,"a")#open(os.path.join("D:\Users\Mo\workspace\AppEvolution\data\preprocessed\review", fileName), "a")
@@ -61,7 +61,7 @@ def prepReview(root, fileName):
         forMark.write("%d %s" % (days,mark))
         if int(mark,10) < 4: 
             reviewPrep = NLPProcess(review)
-            if reviewPrep:
+            if len(reviewPrep) > 1:    # no or one word(e.g. good love boring) are both non-inf
                 forReview.write("%d\n%s\n" % (days," ".join(reviewPrep)))
         dateLine += 7
         reviewLine += 7
@@ -71,7 +71,7 @@ def prepReview(root, fileName):
     forMark.close()
     return
 
-def writeFile(daysLast, match, aFile):
+def writeFile(daysLast, match, aFile):    # write preprocessed what's new data to file
     daysNow = match.group('days')    # time delta
     if daysLast != daysNow:
         if(aFile.tell() != 0):
@@ -82,7 +82,7 @@ def writeFile(daysLast, match, aFile):
     aFile.write("%s " % " ".join(textPrep))
     return daysLast
  
-def prepWhatsNew(path):
+def prepWhatsNew(path):    # Preprocess what's new data
     # RE for id of App
     patName = re.compile(r'^[a-z]+(\.[a-z]+\d*(_[a-z]+\d*)*)*',re.I)
     # RE for normal what's new description, maybe non-inf,e.g.1 111 In this update:
@@ -130,8 +130,9 @@ global wn
 global dayRef
 #-------- TO BE CONTINUE --------#
 # (IF POSSIBLE)ADD OR DELETE STOPWORDS IN NLTK
+#  ADD: good lova cool excite boring game please fix
 englishStopWords = nltk.corpus.stopwords.words("english")
 wn = nltk.corpus.wordnet
 dayRef = datetime.datetime(2016,1,1)
 getRevFiles("D:\Users\Mo\workspace\AppEvolution\data\googleplay_data_save")
-#prepWhatsNew("D:\Users\Mo\workspace\AppEvolution\data\AllWhatsNew.txt")
+prepWhatsNew("D:\Users\Mo\workspace\AppEvolution\data\AllWhatsNew.txt")
