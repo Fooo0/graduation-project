@@ -1,16 +1,8 @@
-#!/usr/bin/env python
 # encoding: utf-8
 '''
 Data preprocess focused on NLP
 
 @author:     Jiafei Song
-
-@copyright:  2017 organization_name. All rights reserved.
-
-@license:    license
-
-@contact:    user_email
-@deffield    updated: Updated
 '''
 
 import os
@@ -59,7 +51,7 @@ def prepReview(root, fileName):    # Preprocess review data
         review = lines[reviewLine].replace('REVB:','')
         mark = lines[markLine].replace('MARK:','')
         forMark.write("%d %s" % (days,mark))
-        if int(mark,10) < 4: 
+        if int(mark,10) < 4:
             reviewPrep = NLPProcess(review)
             if len(reviewPrep) > 1:    # no or one word(e.g. good love boring) are both non-inf
                 forReview.write("%d\n%s\n" % (days," ".join(reviewPrep)))
